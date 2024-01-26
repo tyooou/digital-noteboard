@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>digital noteboard</title>
+    <link rel="stylesheet" href="./digital-noteboard.css" />
+    <link rel="icon" type="image/x-icon" href="./note-icon.png" />
+  </head>
+  <body class="main-container">
+    <h1 class="title">digital noteboard</h1>
+
+    <!-- Note Creation-->
+    <div class="form-container">
+      <form>
+        <!-- Note Title-->
+        <label
+          >Title:
+          <input type="text" id="titleData" placeholder="Enter a title."
+        /></label>
+
+        <!-- Note Type-->
+        <label>Note Type:</label>
+        <select name="note-type" id="typeData">
+          <option value="text">Text</option>
+          <option value="drawing">Doodle</option>
+          <option value="checklist">Checklist</option>
+          <option value="file">File</option>
+        </select>
+
+        <!-- Note Tags-->
+        <label
+          >Create a tag:
+          <input
+            type="text"
+            id="tagData"
+            placeholder="Enter a tag name." /><input
+            type="color"
+            id="colorData"
+            style="margin: 1rem"
+            value="#ff4a4a"
+        /></label>
+        <input type="submit" id="submit-tag" value="Submit" />
+        <div class="tag-container"></div>
+
+        <!-- Note Area -->
+        <label
+          >Note:
+          <textarea
+            name="note-text"
+            id="noteData"
+            style="width: 100%; margin: 0.5rem 0 0 0; white-space: pre-wrap"
+            rows="10"
+            placeholder="Enter some text."
+          ></textarea>
+        </label>
+        <input type="submit" id="submit-note" value="Submit" />
+      </form>
+    </div>
+
+    <div class="note-container"></div>
+    <script src="./digital-noteboard.js"></script>
+  </body>
+</html>
