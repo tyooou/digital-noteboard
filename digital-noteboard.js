@@ -1,8 +1,9 @@
-const modalContainer = document.querySelector(".modal-container");
-const noteContainer = document.querySelector(".note-container");
-const tagContainer = document.querySelector(".tag-container");
+const modalContainer = document.querySelector(".modal-container"),
+  noteContainer = document.querySelector(".note-container"),
+  tagContainer = document.querySelector(".tag-container"),
+  form = document.querySelector("form");
 let pinnedTags = [];
-const form = document.querySelector("form");
+let typeData = document.getElementById("typeData");
 
 class Note {
   constructor(title, type, tags, data) {
@@ -28,18 +29,24 @@ function addNotetoBoard(newNote) {
   const newNoteUI = document.createElement("div");
   newNoteUI.classList.add("note");
   newNoteUI.innerHTML = `
-  <span hidden>${newNote.id}</span>
-  <button type="button" class="note-delete-btn">&times;</button>
-  <p class="note-title">${newNote.title}</p>
-  <p class="note-data">${newNote.data}</p>
-  <div class="property-container">`;
+    <span hidden>${newNote.id}</span>
+    <button type="button" class="note-delete-btn">&times;</button>
+    <p class="note-title">${newNote.title}</p>`;
+
+  if (newNote.type === "text") {
+    newNoteUI.innerHTML += `<p class="note-data">${newNote.data}</p>`;
+  } else if (newNote.type === "drawing") {
+    newNoteUI.innerHTML += `<img src="${newNote.data}" alt="${newNote.title}_${newNote.id}.jpg" style="width: 100%;" />`;
+  }
+  newNoteUI.innerHTML += `<div class="property-container">`;
   newNote.tags.forEach((e) => {
     newNoteUI.innerHTML += `<span hidden>${e.id}</span>
-    <div class="tag-name" style="background-color:${e.color}">
-    ${e.name}
-    </div>`;
+      <div class="tag-name" style="background-color:${e.color}">
+      ${e.name}
+      </div>`;
   });
   newNoteUI.innerHTML += `<p style="margin: 0.7rem 0 0 0; grid-column-start: 1; grid-column-end: 2; color: grey;">${newNote.date}</p></div>`;
+
   noteContainer.appendChild(newNoteUI);
 }
 
@@ -56,20 +63,23 @@ noteContainer.addEventListener("click", (e) => {
 // Submit Note
 document.getElementById("submit-note").addEventListener("click", (e) => {
   e.preventDefault();
-  const titleData = document.querySelector("#titleData");
-  const typeData = document.querySelector("#typeData");
-  const noteData = document.querySelector("#noteData");
+  const titleData = document.querySelector("#titleData"),
+    typeData = document.querySelector("#typeData"),
+    textData = document.querySelector("#noteData-text");
+  let noteData;
 
-  if (
-    titleData.value.length > 0 &&
-    typeData.value.length > 0 &&
-    noteData.value.length > 0
-  ) {
+  if (titleData.value.length > 0 && typeData.value.length > 0) {
+    if (typeData.value === "text" && textData.value.length > 0) {
+      noteData = textData.value;
+    } else if (typeData.value === "drawing" && !isCanvasBlank()) {
+      noteData = canvas.toDataURL();
+    }
+
     const newNote = new Note(
       titleData.value,
       typeData.value,
       pinnedTags,
-      noteData.value
+      noteData
     );
 
     addNotetoBoard(newNote);
@@ -78,7 +88,8 @@ document.getElementById("submit-note").addEventListener("click", (e) => {
     titleData.value = "";
     typeData.value = "text";
     pinnedTags = [];
-    noteData.value = "";
+    textData.value = "";
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     titleData.focus();
 
     document
@@ -102,7 +113,7 @@ document.getElementById("submit-tag").addEventListener("click", (e) => {
     tagData.value = "";
     colorData.value = "#ff4a4a";
 
-    document.querySelector("#noteData").focus();
+    document.querySelector("#textData").focus();
   }
 });
 
@@ -214,3 +225,121 @@ function removeTag(id) {
 
 document.addEventListener("DOMContentLoaded", displayNotes);
 document.addEventListener("DOMContentLoaded", displayTags);
+typeData.addEventListener("change", () => {
+  if (typeData.value === "text") {
+    document.getElementById("text-note").classList.remove("hide");
+    document.getElementById("drawing-note").classList.add("hide");
+  } else if (typeData.value === "drawing") {
+    document.getElementById("text-note").classList.add("hide");
+    document.getElementById("drawing-note").classList.remove("hide");
+  }
+});
+
+// Canvas Draw
+const canvas = document.querySelector("canvas"),
+  toolBtns = document.querySelectorAll(".tool"),
+  sizeSlider = document.querySelector("#size-slider"),
+  colourBtns = document.querySelectorAll(".colours .option"),
+  colourPicker = document.querySelector("#colour-picker"),
+  clearCanvas = document.querySelector(".clear-canvas"),
+  ctx = canvas.getContext("2d");
+
+let prevMouseX,
+  prevMouseY,
+  snapshot,
+  isDrawing = false,
+  selectedTool = "brush",
+  brushWidth = 5,
+  selectedColour = "#ffffff";
+
+window.addEventListener("load", () => {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+});
+
+const drawing = (e) => {
+  if (!isDrawing) return;
+  ctx.putImageData(snapshot, 0, 0);
+
+  if (selectedTool === "brush" || selectedTool === "eraser") {
+    ctx.strokeStyle = selectedTool === "eraser" ? "#303030" : selectedColour;
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+  } else if (selectedTool === "rectangle") {
+    ctx.strokeRect(
+      e.offsetX,
+      e.offsetY,
+      prevMouseX - e.offsetX,
+      prevMouseY - e.offsetY
+    );
+  } else if (selectedTool === "circle") {
+    ctx.beginPath();
+    let radius = Math.sqrt(
+      Math.pow(prevMouseX - e.offsetX, 2) + Math.pow(prevMouseY - e.offsetY, 2)
+    );
+    ctx.arc(prevMouseX, prevMouseY, radius, 0, 2 * Math.PI);
+    ctx.stroke();
+  } else if (selectedTool === "triangle") {
+    ctx.beginPath();
+    ctx.moveTo(prevMouseX, prevMouseY);
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.lineTo(prevMouseX * 2 - e.offsetX, e.offsetY);
+    ctx.closePath();
+    ctx.stroke();
+  } else if (selectedTool === "line") {
+    ctx.beginPath();
+    ctx.moveTo(prevMouseX, prevMouseY);
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+  }
+};
+
+toolBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelector(".options .active").classList.remove("active");
+    btn.classList.add("active");
+    selectedTool = btn.id;
+  });
+});
+
+sizeSlider.addEventListener("change", () => (brushWidth = sizeSlider.value));
+
+colourBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelector(".options .selected").classList.remove("selected");
+    btn.classList.add("selected");
+    selectedColour = window
+      .getComputedStyle(btn)
+      .getPropertyValue("background-color");
+  });
+});
+
+colourPicker.addEventListener("change", () => {
+  colourPicker.parentElement.style.background = colourPicker.value;
+  colourPicker.parentElement.click();
+});
+
+clearCanvas.addEventListener("click", (e) => {
+  e.preventDefault();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+});
+
+canvas.addEventListener("mousedown", (e) => {
+  isDrawing = true;
+  prevMouseX = e.offsetX;
+  prevMouseY = e.offsetY;
+  ctx.beginPath();
+  ctx.lineWidth = brushWidth;
+  ctx.strokeStyle = selectedColour;
+  snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+});
+canvas.addEventListener("mouseup", () => (isDrawing = false));
+canvas.addEventListener("mousemove", drawing);
+
+function isCanvasBlank() {
+  const pixelBuffer = new Uint32Array(
+    ctx.getImageData(0, 0, canvas.width, canvas.height).data.buffer
+  );
+
+  return !pixelBuffer.some((color) => color !== 0);
+}

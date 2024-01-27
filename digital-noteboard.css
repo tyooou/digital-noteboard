@@ -33,7 +33,6 @@ form {
   textarea {
     background-color: #303030;
     border: none;
-    color-scheme: dark;
     padding: 0.2rem 0.5rem;
     margin: 0.2rem 0 0 0;
   }
@@ -42,6 +41,11 @@ form {
   #submit-note {
     width: 30%;
     margin: 0 auto;
+  }
+
+  canvas {
+    background-color: #303030;
+    width: 100%;
   }
 }
 
@@ -108,4 +112,8 @@ form {
 
 .selected-tag {
   opacity: 70%;
+}
+
+.hide {
+  display: none;
 }
