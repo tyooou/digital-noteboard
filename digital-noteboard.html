@@ -11,114 +11,145 @@
     <h1 class="title">digital noteboard</h1>
 
     <!-- Note Creation-->
-    <div class="form-container">
-      <form>
-        <!-- Note Title-->
-        <label
-          >Title:
-          <input type="text" id="titleData" placeholder="Enter a title."
-        /></label>
+    <form style="width: 500px">
+      <div id="wrapper">
+        <div style="flex: 1">
+          <!-- Note Title-->
+          <label style="flex: 1">Title:</label>
+          <input type="text" id="titleData" placeholder="Enter a title." />
+        </div>
 
-        <!-- Note Type-->
-        <label>Note Type:</label>
-        <select name="note-type" id="typeData">
-          <option value="text">Text</option>
-          <option value="drawing">Doodle</option>
-          <option value="checklist">Checklist</option>
-          <option value="file">File</option>
-        </select>
+        <div>
+          <!-- Note Type-->
+          <label>Note Type:</label>
+          <select name="note-type" id="typeData" style="width: 150px">
+            <option value="text">Text</option>
+            <option value="drawing">Doodle</option>
+          </select>
+        </div>
+      </div>
 
+      <div id="wrapper">
         <!-- Note Tags-->
-        <label
-          >Create a tag:
+        <div style="flex: 1">
+          <label style="width: 150px">Create a tag: </label
+          ><input type="text" id="tagData" placeholder="Enter a tag name." />
           <input
-            type="text"
-            id="tagData"
-            placeholder="Enter a tag name." /><input
             type="color"
             id="colorData"
-            style="margin: 1rem"
             value="#ff4a4a"
-        /></label>
-        <input type="submit" id="submit-tag" value="Submit" />
-        <div class="tag-container"></div>
+            style="margin: 0 0 0 0.5rem"
+          />
+        </div>
+        <div>
+          <input type="submit" id="submit-tag" value="Submit tag" />
+        </div>
+      </div>
 
-        <!-- Note Area -->
+      <div class="tag-container"></div>
+
+      <!-- Note Area -->
+      <div id="wrapper">
         <label>Note:</label>
+      </div>
 
-        <!-- Text Note -->
-        <div id="text-note">
-          <textarea
-            name="note-text"
-            id="noteData-text"
-            style="width: 100%; margin: 0.5rem 0 0 0; white-space: pre-wrap"
-            rows="10"
-            placeholder="Enter some text."
-          ></textarea>
-        </div>
+      <!-- Text Note -->
+      <div id="text-note">
+        <textarea
+          name="note-text"
+          id="noteData-text"
+          style="
+            width: 100%;
+            white-space: pre-wrap;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+          "
+          rows="22"
+          placeholder="Enter some text."
+        ></textarea>
+      </div>
 
-        <!-- Drawing Note -->
-        <div id="drawing-note" class="hide">
-          <section class="tools-board">
-            <div class="row">
-              <label class="title">Shapes</label>
-              <ul class="options">
-                <li class="option tool" id="rectangle">
-                  <span>Rectangle</span>
-                </li>
-                <li class="option tool" id="circle">
-                  <span>Circle</span>
-                </li>
-                <li class="option tool" id="triangle">
-                  <span>Triangle</span>
-                </li>
-                <li class="option tool" id="line">
-                  <span>Line</span>
-                </li>
-              </ul>
-            </div>
-            <div class="row">
-              <label class="title">Options</label>
-              <ul class="options">
-                <li class="option active tool" id="brush">
-                  <span>Brush</span>
-                </li>
-                <li class="option tool" id="eraser">
-                  <span>Eraser</span>
-                </li>
-                <li class="option">
-                  <input
-                    type="range"
-                    id="size-slider"
-                    min="1"
-                    max="20"
-                    value="5"
-                  />
-                </li>
-              </ul>
-            </div>
-            <div class="row colours">
-              <label class="title">Colour</label>
-              <ul class="options">
-                <li class="option"></li>
-                <li class="option selected"></li>
-                <li class="option"></li>
-                <li class="option">
-                  <input type="color" id="colour-picker" />
-                </li>
-              </ul>
-            </div>
-            <div class="row">
-              <button class="clear-canvas">Clear canvas.</button>
-            </div>
-          </section>
-          <section class="drawing-board">
-            <canvas id="noteData-drawing"></canvas>
-          </section>
-        </div>
-        <input type="submit" id="submit-note" value="Submit" />
-      </form>
-    </div>
+      <!-- Drawing Note -->
+      <div id="drawing-note">
+        <section class="tools-board">
+          <div class="row">
+            <ul class="options">
+              <li class="option active tool" id="brush">
+                <img src="./brush.svg" alt="line-icon" class="canvas-tool" />
+                <span hidden>Brush</span>
+              </li>
+              <li class="option tool" id="eraser">
+                <img src="./eraser.svg" alt="line-icon" class="canvas-tool" />
+                <span hidden>Eraser</span>
+              </li>
+              <li class="option">
+                <input
+                  type="range"
+                  id="size-slider"
+                  min="1"
+                  max="20"
+                  value="5"
+                />
+              </li>
+              <li class="option tool" id="rectangle">
+                <img
+                  src="./rectangle.svg"
+                  alt="rectangle-icon"
+                  class="canvas-tool"
+                />
+                <span hidden>Rectangle</span>
+              </li>
+              <li class="option tool" id="circle">
+                <img src="./circle.svg" alt="circle-icon" class="canvas-tool" />
+                <span hidden>Circle</span>
+              </li>
+              <li class="option tool" id="triangle">
+                <img
+                  src="./triangle.svg"
+                  alt="triangle-icon"
+                  class="canvas-tool"
+                />
+                <span hidden>Triangle</span>
+              </li>
+              <li class="option tool" id="line">
+                <img
+                  src="./line.png"
+                  alt="line-icon"
+                  class="canvas-tool"
+                  style="width: 17px"
+                />
+                <span hidden>Line</span>
+              </li>
+              <li class="colours">
+                <input
+                  type="color"
+                  class="option"
+                  id="colour-picker"
+                  value="#ffffff"
+                />
+              </li>
+              <li class="option clear-canvas">
+                <img
+                  src="./rubbish-bin.png"
+                  alt="bin-icon"
+                  class="canvas-tool"
+                  style="width: 17px"
+                />
+                <span hidden>Clear</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+        <section class="drawing-board">
+          <canvas></canvas>
+        </section>
+      </div>
+
+      <div id="wrapper" style="justify-content: center">
+        <input type="submit" id="submit-note" value="Submit note" />
+      </div>
+    </form>
 
     <div class="note-container"></div>
     <script src="./digital-noteboard.js"></script>

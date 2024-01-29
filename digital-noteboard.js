@@ -86,7 +86,6 @@ document.getElementById("submit-note").addEventListener("click", (e) => {
     storeNote(newNote);
 
     titleData.value = "";
-    typeData.value = "text";
     pinnedTags = [];
     textData.value = "";
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -232,6 +231,9 @@ typeData.addEventListener("change", () => {
   } else if (typeData.value === "drawing") {
     document.getElementById("text-note").classList.add("hide");
     document.getElementById("drawing-note").classList.remove("hide");
+  } else if (typeData.value === "file") {
+    document.getElementById("text-note").classList.add("hide");
+    document.getElementById("drawing-note").classList.add("hide");
   }
 });
 
@@ -239,7 +241,7 @@ typeData.addEventListener("change", () => {
 const canvas = document.querySelector("canvas"),
   toolBtns = document.querySelectorAll(".tool"),
   sizeSlider = document.querySelector("#size-slider"),
-  colourBtns = document.querySelectorAll(".colours .option"),
+  colourBtns = document.querySelectorAll(".colours"),
   colourPicker = document.querySelector("#colour-picker"),
   clearCanvas = document.querySelector(".clear-canvas"),
   ctx = canvas.getContext("2d");
@@ -255,6 +257,7 @@ let prevMouseX,
 window.addEventListener("load", () => {
   canvas.width = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
+  document.getElementById("drawing-note").classList.add("hide");
 });
 
 const drawing = (e) => {
@@ -304,18 +307,8 @@ toolBtns.forEach((btn) => {
 
 sizeSlider.addEventListener("change", () => (brushWidth = sizeSlider.value));
 
-colourBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    document.querySelector(".options .selected").classList.remove("selected");
-    btn.classList.add("selected");
-    selectedColour = window
-      .getComputedStyle(btn)
-      .getPropertyValue("background-color");
-  });
-});
-
 colourPicker.addEventListener("change", () => {
-  colourPicker.parentElement.style.background = colourPicker.value;
+  selectedColour = colourPicker.value;
   colourPicker.parentElement.click();
 });
 
