@@ -1,3 +1,69 @@
+h1,
+input,
+textarea,
+div,
+button,
+select {
+  font-family: "Roboto Mono", monospace;
+  font-optical-sizing: auto;
+  font-style: normal;
+  color: white;
+}
+
+.modal-container {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  background-color: rgba(28, 28, 28, 0.8);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+
+  .modal {
+    background-color: #303030;
+    border: none;
+    padding: 2rem;
+    position: relative;
+    max-width: 80%;
+    max-height: 80%;
+    min-width: 300px;
+    min-height: 300px;
+    overflow: auto;
+    scrollbar-color: #1c1c1c #303030;
+  }
+
+  .modal-title {
+    width: 95%;
+    overflow-wrap: break-word;
+  }
+
+  .modal-data {
+    resize: vertical;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+
+  .modal-btn {
+    background-color: #ff4a4a;
+    position: absolute;
+    border-radius: 5px;
+    top: 17px;
+    right: 17px;
+    color-scheme: dark;
+    border: none;
+    padding: 0.2rem 0.5rem;
+  }
+}
+
+.modal-active {
+  opacity: 1;
+  pointer-events: all;
+}
+
 .main-container {
   background-color: #1c1c1c;
   display: grid;
@@ -5,41 +71,74 @@
   padding: 2rem;
 }
 
-#wrapper {
+.wrapper {
   display: flex;
-  margin: 0.5rem 0;
   align-items: center;
+  margin: 0.5rem 0;
 }
 
-h1,
-label,
-input,
-p,
-select,
-button,
-.tag-name,
-span {
-  font-family: "Roboto Mono", monospace;
-  font-optical-sizing: auto;
-  font-style: normal;
-  color: white;
+/* Note Tags */
+.tag-container {
+  user-select: none;
+  margin: 0.5rem 0;
+  place-items: center;
 }
 
-.form-container {
-  width: 500px;
-  margin: 1rem;
+.note-tag {
+  display: inline-block;
+
+  .tag-name,
+  .tag-name-note {
+    border-radius: 5px;
+    font-size: 90%;
+    padding: 0 0.2rem;
+    margin-right: 0.3rem;
+  }
+
+  .tag-name {
+    cursor: pointer;
+    margin: 0.3rem;
+  }
+
+  .tag-delete-btn {
+    background-color: transparent;
+    border: none;
+    font-size: 105%;
+    cursor: pointer;
+  }
 }
 
+.tag-name:hover {
+  opacity: 50%;
+}
+
+.selected-tag {
+  opacity: 50%;
+}
+
+/* Form */
 form {
+  width: 500px;
   margin: 1rem 0;
 
   input,
   select,
   textarea {
     background-color: #303030;
+    color-scheme: dark;
     border: none;
     padding: 0.2rem 0.5rem;
-    color-scheme: dark;
+  }
+
+  textarea {
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+
+  input[type="submit"]:hover {
+    opacity: 50%;
   }
 
   canvas {
@@ -48,55 +147,40 @@ form {
     min-height: 306px;
   }
 
-  input[type="submit"]:hover {
-    opacity: 50%;
+  .row .options {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0 0.5rem 0;
+    padding: 0;
+
+    .option {
+      margin: 0.2rem;
+      cursor: pointer;
+    }
+
+    .canvas-tool {
+      filter: brightness(0) invert(1);
+      vertical-align: middle;
+      margin: 0.2rem;
+    }
+
+    .option:is(:hover, .active) :where(span, label) {
+      color: #505050;
+    }
+
+    .option:is(:hover, .active) img {
+      filter: brightness(0) invert(1) opacity(0.2);
+    }
   }
 }
 
-.tag-container {
-  user-select: none;
-  overflow: auto;
-  margin: 0.5rem 0;
-}
-
-.tag-name {
-  display: inline-block;
-  border-radius: 5px;
-  background-color: red;
-  padding: 0.1rem 0.3rem;
-  font-size: 90%;
-  margin: 0.2rem;
-  cursor: pointer;
-}
-
-.tag-delete-btn {
-  border: none;
-  background-color: transparent;
-  font-size: 105%;
-  cursor: pointer;
-}
-
-.tag-name:hover {
-  opacity: 50%;
-}
-
-.noteTag {
-  display: inline-block;
-}
-
-.tag {
-  display: inline-block;
-  border-radius: 5px;
-  background-color: red;
-  padding: 0.1rem 0.3rem;
-  font-size: 90%;
-  position: relative;
-}
-
+/* Notes */
 .note-container {
   display: grid;
   max-width: 100%;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 300px));
 }
 
 .note {
@@ -104,6 +188,9 @@ form {
   padding: 1rem;
   margin: 1rem;
   position: relative;
+  overflow-wrap: break-word;
+  height: 260px;
+  cursor: pointer;
 
   .note-delete-btn {
     position: absolute;
@@ -121,42 +208,33 @@ form {
 
   .note-title {
     font-size: 20px;
+    font-weight: bold;
     margin: 5px 0;
+    width: 85%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
-}
 
-.selected-tag {
-  opacity: 70%;
+  .note-data {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: pre-wrap;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 8;
+    margin-bottom: 2rem;
+  }
+
+  .property-container {
+    display: inline;
+    position: absolute;
+    bottom: 0.9rem;
+  }
 }
 
 .hide {
   display: none;
-}
-
-.row .options {
-  list-style: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 0 0.5rem 0;
-  padding: 0;
-
-  .option {
-    margin: 0.2rem;
-    cursor: pointer;
-  }
-
-  .canvas-tool {
-    filter: brightness(0) invert(1);
-    vertical-align: middle;
-    margin: 0.2rem;
-  }
-
-  .option:is(:hover, .active) :where(span, label) {
-    color: #505050;
-  }
-
-  .option:is(:hover, .active) img {
-    filter: brightness(0) invert(1) opacity(0.2);
-  }
 }

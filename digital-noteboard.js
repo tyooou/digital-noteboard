@@ -34,29 +34,40 @@ function addNotetoBoard(newNote) {
     <p class="note-title">${newNote.title}</p>`;
 
   if (newNote.type === "text") {
-    newNoteUI.innerHTML += `<p class="note-data">${newNote.data}</p>`;
+    newNoteUI.innerHTML += `<div class="note-data"><p>${newNote.data}</p></div>`;
   } else if (newNote.type === "drawing") {
-    newNoteUI.innerHTML += `<img src="${newNote.data}" alt="${newNote.title}_${newNote.id}.jpg" style="width: 100%;" />`;
+    newNoteUI.innerHTML += `<div class="note-data"><img src="${newNote.data}" alt="${newNote.title}_${newNote.id}.jpg" style="width: 100%; margin-top: 20px"/></div>`;
   }
-  newNoteUI.innerHTML += `<div class="property-container">`;
+
+  let appendTags = "";
   newNote.tags.forEach((e) => {
-    newNoteUI.innerHTML += `<span hidden>${e.id}</span>
-      <div class="tag-name" style="background-color:${e.color}">
+    appendTags += `<div class="note-tag"><span hidden>${e.id}</span>
+      <div class="tag-name-note" style="background-color:${e.color}">
       ${e.name}
-      </div>`;
+      </div></div>`;
   });
-  newNoteUI.innerHTML += `<p style="margin: 0.7rem 0 0 0; grid-column-start: 1; grid-column-end: 2; color: grey;">${newNote.date}</p></div>`;
+
+  newNoteUI.innerHTML +=
+    `<div class="property-container">` +
+    appendTags +
+    `<p style="margin: 0.7rem 0 0 0; color: grey;">${newNote.date}</p></div>`;
 
   noteContainer.appendChild(newNoteUI);
 }
 
-// Delete Note
+// Note Buttons
 noteContainer.addEventListener("click", (e) => {
+  const currentNote = e.target.closest(".note");
   if (e.target.classList.contains("note-delete-btn")) {
-    const currentNote = e.target.closest(".note");
+    // Delete Note
+    const currentID = currentNote.querySelector("span").textContent;
     currentNote.remove();
-    const id = currentNote.querySelector("span").textContent;
-    removeNote(Number(id));
+    removeNote(Number(currentID));
+  } else {
+    // Modal View
+    const currentTitle = currentNote.querySelector(".note-title").textContent,
+      currentData = currentNote.querySelector(".note-data");
+    viewNoteModal(currentTitle, currentData);
   }
 });
 
@@ -119,7 +130,7 @@ document.getElementById("submit-tag").addEventListener("click", (e) => {
 // Create Tag
 function createNoteTag(noteTag) {
   const newNoteTagUI = document.createElement("div");
-  newNoteTagUI.classList.add("noteTag");
+  newNoteTagUI.classList.add("note-tag");
   newNoteTagUI.innerHTML = `
   <span hidden>${noteTag.id}</span>
   <div class="tag-name" style="background-color:${noteTag.color}">
@@ -131,7 +142,7 @@ function createNoteTag(noteTag) {
 
 // Remove/Add Tag
 tagContainer.addEventListener("click", (e) => {
-  const currentTag = e.target.closest(".noteTag");
+  const currentTag = e.target.closest(".note-tag");
   const id = currentTag.querySelector("span").textContent;
   currentTag.classList.toggle("selected-tag");
   if (e.target.classList.contains("tag-delete-btn")) {
@@ -152,6 +163,40 @@ tagContainer.addEventListener("click", (e) => {
         }
       });
     }
+  }
+});
+
+function viewNoteModal(title, data) {
+  let modalTitle = document.querySelector(".modal-title"),
+    modalData = document.querySelector(".modal-data");
+
+  modalTitle.textContent = title;
+  if (data.getElementsByTagName("img").length > 0) {
+    modalData.innerHTML = `<img src="${data.querySelector("img").src}"/>`;
+  } else {
+    modalData.innerHTML = `<p>${data.textContent}<p>`;
+  }
+  modalContainer.classList.add("modal-active");
+}
+
+const modalBtn = document
+  .querySelector(".modal-btn")
+  .addEventListener("click", () => {
+    modalContainer.classList.remove("modal-active");
+  });
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && modalContainer.classList.contains("modal-active")) {
+    modalContainer.classList.remove("modal-active");
+  }
+});
+
+document.addEventListener("click", (e) => {
+  if (
+    e.target.classList.contains("modal-container") &&
+    modalContainer.classList.contains("modal-active")
+  ) {
+    modalContainer.classList.remove("modal-active");
   }
 });
 

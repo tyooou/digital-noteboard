@@ -8,11 +8,19 @@
     <link rel="icon" type="image/x-icon" href="./icons/note-icon.png" />
   </head>
   <body class="main-container">
+    <div class="modal-container">
+      <div class="modal">
+        <button class="modal-btn">&times;</button>
+        <h2 class="modal-title"></h2>
+        <div class="modal-data"></div>
+      </div>
+    </div>
+
     <h1 class="title">digital noteboard</h1>
 
     <!-- Note Creation-->
-    <form style="width: 500px">
-      <div id="wrapper">
+    <form>
+      <div class="wrapper">
         <div style="flex: 1">
           <!-- Note Title-->
           <label style="flex: 1">Title:</label>
@@ -22,14 +30,18 @@
         <div>
           <!-- Note Type-->
           <label>Note Type:</label>
-          <select name="note-type" id="typeData" style="width: 150px">
+          <select
+            name="note-type"
+            id="typeData"
+            style="width: 150px; cursor: pointer"
+          >
             <option value="text">Text</option>
             <option value="drawing">Doodle</option>
           </select>
         </div>
       </div>
 
-      <div id="wrapper">
+      <div class="wrapper">
         <!-- Note Tags-->
         <div style="flex: 1">
           <label style="width: 150px">Create a tag: </label
@@ -38,18 +50,23 @@
             type="color"
             id="colorData"
             value="#ff4a4a"
-            style="margin: 0 0 0 0.5rem"
+            style="margin: 0 0 0 0.5rem; cursor: pointer"
           />
         </div>
         <div>
-          <input type="submit" id="submit-tag" value="Submit tag" />
+          <input
+            type="submit"
+            id="submit-tag"
+            value="Submit tag"
+            style="cursor: pointer"
+          />
         </div>
       </div>
 
       <div class="tag-container"></div>
 
       <!-- Note Area -->
-      <div id="wrapper">
+      <div class="wrapper">
         <label>Note:</label>
       </div>
 
@@ -58,13 +75,6 @@
         <textarea
           name="note-text"
           id="noteData-text"
-          style="
-            width: 100%;
-            white-space: pre-wrap;
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-          "
           rows="22"
           placeholder="Enter some text."
         ></textarea>
@@ -158,8 +168,13 @@
         </section>
       </div>
 
-      <div id="wrapper" style="justify-content: center">
-        <input type="submit" id="submit-note" value="Submit note" />
+      <div class="wrapper" style="justify-content: center">
+        <input
+          type="submit"
+          id="submit-note"
+          value="Submit note"
+          style="cursor: pointer"
+        />
       </div>
     </form>
 
