@@ -27,7 +27,9 @@ class Tag {
 // Create Note
 function addNotetoBoard(newNote) {
   const newNoteUI = document.createElement("div");
-  newNoteUI.classList.add("note");
+  requestAnimationFrame(() => {
+    newNoteUI.classList.add("note");
+  });
   newNoteUI.innerHTML = `
     <span hidden>${newNote.id}</span>
     <button type="button" class="note-delete-btn">&times;</button>
@@ -61,8 +63,11 @@ noteContainer.addEventListener("click", (e) => {
   if (e.target.classList.contains("note-delete-btn")) {
     // Delete Note
     const currentID = currentNote.querySelector("span").textContent;
-    currentNote.remove();
-    removeNote(Number(currentID));
+    currentNote.classList.add("note-delete");
+    setTimeout(() => {
+      currentNote.remove();
+      removeNote(Number(currentID));
+    }, 200);
   } else {
     // Modal View
     const currentTitle = currentNote.querySelector(".note-title").textContent,
@@ -77,34 +82,47 @@ document.getElementById("submit-note").addEventListener("click", (e) => {
   const titleData = document.querySelector("#titleData"),
     typeData = document.querySelector("#typeData"),
     textData = document.querySelector("#noteData-text");
-  let noteData;
+  let noteData,
+    noteFlag = true;
 
-  if (titleData.value.length > 0 && typeData.value.length > 0) {
+  if (titleData.value.length > 0) {
+    noteFlag = false;
     if (typeData.value === "text" && textData.value.length > 0) {
       noteData = textData.value;
     } else if (typeData.value === "drawing" && !isCanvasBlank()) {
       noteData = canvas.toDataURL();
+    } else {
+      noteFlag = true;
     }
 
-    const newNote = new Note(
-      titleData.value,
-      typeData.value,
-      pinnedTags,
-      noteData
+    if (noteFlag === false) {
+      const newNote = new Note(
+        titleData.value,
+        typeData.value,
+        pinnedTags,
+        noteData
+      );
+
+      addNotetoBoard(newNote);
+      storeNote(newNote);
+
+      titleData.value = "";
+      pinnedTags = [];
+      textData.value = "";
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      titleData.focus();
+
+      document
+        .querySelectorAll(".selected-tag")
+        .forEach((e) => e.classList.remove("selected-tag"));
+    }
+  }
+
+  if (noteFlag === true) {
+    showAlertMessage(
+      "A note must have a title and some information.",
+      "alert-message"
     );
-
-    addNotetoBoard(newNote);
-    storeNote(newNote);
-
-    titleData.value = "";
-    pinnedTags = [];
-    textData.value = "";
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    titleData.focus();
-
-    document
-      .querySelectorAll(".selected-tag")
-      .forEach((e) => e.classList.remove("selected-tag"));
   }
 });
 
@@ -199,6 +217,22 @@ document.addEventListener("click", (e) => {
     modalContainer.classList.remove("modal-active");
   }
 });
+
+function showAlertMessage(message, alertClass) {
+  const alertDiv = document.createElement("div");
+  alertDiv.appendChild(document.createTextNode(message));
+  form.insertAdjacentElement("beforebegin", alertDiv);
+  requestAnimationFrame(() => {
+    alertDiv.className = `message ${alertClass}`;
+  });
+
+  setTimeout(() => {
+    alertDiv.classList.add("alert-delete");
+    setTimeout(() => {
+      alertDiv.remove();
+    }, 200);
+  }, 2000);
+}
 
 // LOCAL STORAGE //
 function getNotes() {
