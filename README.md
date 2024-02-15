@@ -1,6 +1,6 @@
 <code>digital noteboard</code> 📝
 
-A simple and minimalist note-taking application.
+A minimalistic note-taking application with simplicity and ease-of-use at its focus.
 
 https://tyooou.github.io/digital-noteboard/
 
